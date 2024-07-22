@@ -9,41 +9,63 @@
                 <div class="panel panel-default">
                     <div class="panel-heading">Tambah Transaksi</div>
                     <div class="panel-body">
-                        <?= form_open('transaksi/simpan') ?>
-                        <div class="form-group">
-                            <?= form_label('Tanggal Masuk', 'tgl_masuk') ?>
-                            <?= form_input(['name' => 'tgl_masuk', 'id' => 'tgl_masuk', 'type' => 'date', 'class' => 'form-control', 'required' => true]) ?>
-                        </div>
-                        <div class="form-group">
-                            <?= form_label('Jenis', 'jenis') ?>
-                            <?= form_input(['name' => 'jenis', 'id' => 'jenis', 'class' => 'form-control', 'required' => true]) ?>
-                        </div>
-                        <div class="form-group">
-                            <?= form_label('Paket', 'paket') ?>
-                            <?= form_input(['name' => 'paket', 'id' => 'paket', 'class' => 'form-control', 'required' => true]) ?>
-                        </div>
-                        <div class="form-group">
-                            <?= form_label('Jumlah', 'jumlah') ?>
-                            <?= form_input(['name' => 'jumlah', 'id' => 'jumlah', 'type' => 'number', 'class' => 'form-control', 'required' => true]) ?>
-                        </div>
-                        <div class="form-group">
-                            <?= form_label('Harga Satuan', 'harga_satuan') ?>
-                            <?= form_input(['name' => 'harga_satuan', 'id' => 'harga_satuan', 'type' => 'number', 'class' => 'form-control', 'required' => true]) ?>
-                        </div>
-                        <div class="form-group">
-                            <?= form_label('Tanggal Ambil', 'tgl_ambil') ?>
-                            <?= form_input(['name' => 'tgl_ambil', 'id' => 'tgl_ambil', 'type' => 'date', 'class' => 'form-control']) ?>
-                        </div>
-                        <div class="form-group text-center">
-                            <?= form_submit('submit', 'Simpan', ['class' => 'btn btn-primary']) ?>
-                            <a href="<?= site_url('transaksi') ?>" class="btn btn-secondary">Kembali</a>
-                        </div>
-                        <?= form_close() ?>
+                        <!-- Form Tambah Transaksi -->
+                        <form action="<?= site_url('transaksi/simpan') ?>" method="post">
+                            <?= csrf_field() ?>
+                            <div class="form-group">
+                                <label for="id_pelanggan">Pelanggan</label>
+                                <select class="form-control" name="id_pelanggan" id="id_pelanggan" required>
+                                    <option value="">Pilih Pelanggan</option>
+                                    <?php foreach ($pelanggan as $pelangganItem): ?>
+                                        <option value="<?= esc($pelangganItem['id_pelanggan']) ?>"><?= esc($pelangganItem['nama']) ?></option>
+                                    <?php endforeach; ?>
+                                </select>
+                            </div>
+                            <div class="form-group">
+                                <label for="paket">Paket</label>
+                                <select class="form-control" name="paket" id="paket" required>
+                                    <option value="">Pilih Paket</option>
+                                    <?php foreach ($paket as $paketItem): ?>
+                                        <option value="<?= esc($paketItem['kode_paket']) ?>" data-harga="<?= esc($paketItem['harga']) ?>">
+                                            <?= esc($paketItem['paket']) ?>
+                                        </option>
+                                    <?php endforeach; ?>
+                                </select>
+                            </div>
+                            <div class="form-group">
+                                <label for="jumlah">Jumlah</label>
+                                <input type="number" class="form-control" name="jumlah" id="jumlah" required>
+                            </div>
+                            <div class="form-group">
+                                <label for="total">Total</label>
+                                <input type="text" class="form-control" name="total" id="total" readonly>
+                            </div>
+                            <button type="submit" class="btn btn-primary">Simpan</button>
+                        </form>
                     </div>
                 </div>
             </div>
         </div>
     </div>
 </div>
+
+<script>
+document.addEventListener('DOMContentLoaded', function () {
+    const paketSelect = document.getElementById('paket');
+    const jumlahInput = document.getElementById('jumlah');
+    const totalInput = document.getElementById('total');
+
+    function updateTotal() {
+        const selectedOption = paketSelect.options[paketSelect.selectedIndex];
+        const harga = selectedOption ? parseFloat(selectedOption.getAttribute('data-harga')) : 0;
+        const jumlah = parseFloat(jumlahInput.value) || 0;
+        const total = harga * jumlah;
+        totalInput.value = total.toFixed(0); // Format total sebagai integer
+    }
+
+    paketSelect.addEventListener('change', updateTotal);
+    jumlahInput.addEventListener('input', updateTotal);
+});
+</script>
 
 <?= $this->endSection() ?>

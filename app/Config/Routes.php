@@ -28,10 +28,12 @@ $routes->group('paket', function($routes) {
 
 $routes->group('transaksi', function($routes) {
     $routes->get('/', 'Transaksi::index');
-    $routes->get('/transaksi/tambah_transaksi', 'Transaksi::tambah');
-    $routes->post('/transaksi/simpan', 'Transaksi::simpan');
-    $routes->get('/transaksi/edit/(:segment)', 'Transaksi::edit/$1');
-    $routes->post('/transaksi/update/(:segment)', 'Transaksi::update/$1');
+    $routes->get('tambah_transaksi', 'Transaksi::tambah');
+    $routes->post('simpan', 'Transaksi::simpan');
+    $routes->get('edit/(:segment)', 'Transaksi::edit/$1');
+    $routes->post('update/(:segment)', 'Transaksi::update/$1');
+    $routes->get('delete/(:segment)', 'Transaksi::delete/$1');
+    $routes->get('konfirmasi_ambil/(:segment)', 'Transaksi::konfirmasi_ambil/$1');
 });
 
 

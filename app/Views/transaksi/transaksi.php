@@ -5,12 +5,12 @@
 <div id="page-content-wrapper">
     <div class="container-fluid">
         <div class="row">
-            <div class="col-lg-12">                            
+            <div class="col-lg-12">
                 <div class="panel panel-default">
                     <div class="panel-heading">Data Transaksi</div>
                     <div class="panel-body">
                         <!-- Tabel Data Transaksi -->
-                        <table class="table table-striped table-responsive">
+                        <table class="table table-striped table-responsive" id="transaksiTable">
                             <thead>
                                 <tr>
                                     <th>No.</th>
@@ -37,6 +37,9 @@
                                         <td>
                                             <a href="<?= site_url('transaksi/edit/' . $item['no_order']) ?>" class="btn btn-warning btn-sm">Edit</a>
                                             <a href="<?= site_url('transaksi/delete/' . $item['no_order']) ?>" class="btn btn-danger btn-sm" onclick="return confirm('Yakin ingin menghapus?')">Hapus</a>
+                                            <?php if (is_null($item['tgl_ambil'])): ?>
+                                                <button class="btn btn-success btn-sm" onclick="confirmPickup(<?= esc($item['no_order']) ?>)">Konfirmasi</button>
+                                            <?php endif; ?>
                                         </td>
                                     </tr>
                                     <?php endforeach; ?>
@@ -57,5 +60,14 @@
         </div>
     </div>
 </div>
+
+<script>
+function confirmPickup(noOrder) {
+    if (confirm('Apakah Anda yakin ingin mengkonfirmasi tanggal ambil untuk order ini?')) {
+        // Kirim permintaan konfirmasi ke server
+        window.location.href = '<?= site_url('transaksi/konfirmasi_ambil') ?>/' + noOrder;
+    }
+}
+</script>
 
 <?= $this->endSection() ?>

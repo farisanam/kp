@@ -1,53 +1,98 @@
 <?= $this->extend('layout') ?>
 <?= $this->section('content') ?>
 
+<!-- Page Content -->
 <div id="page-content-wrapper">
     <div class="container-fluid">
         <div class="row">
-            <div class="col-lg-12">                            
+            <div class="col-lg-12">
                 <div class="panel panel-default">
                     <div class="panel-heading">Edit Transaksi</div>
-                    <div class="panel-body">                                    
-                        <?= form_open('transaksi/update/' . $transaksi->no_order) ?>
+                    <div class="panel-body">
+                        <!-- Form Edit Transaksi -->
+                        <form action="<?= site_url('transaksi/update/' . $transaksi['no_order']) ?>" method="post">
+                            <?= csrf_field() ?>
                             <div class="form-group">
-                                <?= form_label('Tanggal Masuk', 'tgl_masuk') ?>
-                                <?= form_input(['name' => 'tgl_masuk', 'class' => 'form-control', 'type' => 'date', 'value' => $transaksi->tgl_masuk, 'required' => 'required']) ?>
+                                <label for="id_pelanggan">Nama Pelanggan</label>
+                                <select name="id_pelanggan" id="id_pelanggan" class="form-control" required>
+                                    <?php foreach ($pelanggan as $p): ?>
+                                        <option value="<?= $p['id_pelanggan'] ?>" <?= ($transaksi['id_pelanggan'] == $p['id_pelanggan']) ? 'selected' : '' ?>>
+                                            <?= esc($p['nama']) ?>
+                                        </option>
+                                    <?php endforeach; ?>
+                                </select>
                             </div>
                             <div class="form-group">
-                                <?= form_label('Jenis', 'jenis') ?>
-                                <?= form_input(['name' => 'jenis', 'class' => 'form-control', 'value' => $transaksi->jenis, 'required' => 'required']) ?>
+                                <label for="kode_paket">Paket</label>
+                                <select name="kode_paket" id="kode_paket" class="form-control" required>
+                                    <?php foreach ($paket as $p): ?>
+                                        <option value="<?= $p['kode_paket'] ?>" <?= ($transaksi['kode_paket'] == $p['kode_paket']) ? 'selected' : '' ?>>
+                                            <?= esc($p['paket']) ?>
+                                        </option>
+                                    <?php endforeach; ?>
+                                </select>
                             </div>
                             <div class="form-group">
-                                <?= form_label('Paket', 'paket') ?>
-                                <?= form_input(['name' => 'paket', 'class' => 'form-control', 'value' => $transaksi->paket, 'required' => 'required']) ?>
+                                <label for="jumlah">Jumlah</label>
+                                <input type="number" name="jumlah" id="jumlah" class="form-control" value="<?= esc($transaksi['jumlah']) ?>" min="1" required>
                             </div>
                             <div class="form-group">
-                                <?= form_label('Jumlah', 'jumlah') ?>
-                                <?= form_input(['name' => 'jumlah', 'class' => 'form-control', 'type' => 'number', 'value' => $transaksi->jumlah, 'required' => 'required']) ?>
+                                <label for="total">Total</label>
+                                <input type="text" name="total" id="total" class="form-control" value="<?= esc($transaksi['total']) ?>" readonly>
                             </div>
-                            <div class="form-group">
-                                <?= form_label('Status', 'status') ?>
-                                <?= form_input(['name' => 'status', 'class' => 'form-control', 'value' => $transaksi->status]) ?>
-                            </div>
-                            <div class="form-group">
-                                <?= form_label('Tanggal Ambil', 'tgl_ambil') ?>
-                                <?= form_input(['name' => 'tgl_ambil', 'class' => 'form-control', 'type' => 'date', 'value' => $transaksi->tgl_ambil]) ?>
-                            </div>
-                            <div class="form-group">
-                                <?= form_label('Harga Satuan', 'harga_satuan') ?>
-                                <?= form_input(['name' => 'harga_satuan', 'class' => 'form-control', 'type' => 'number', 'value' => $transaksi->harga_satuan, 'required' => 'required']) ?>
-                            </div>
-                            <div class="form-group">
-                                <?= form_label('Total', 'total') ?>
-                                <?= form_input(['name' => 'total', 'class' => 'form-control', 'type' => 'number', 'value' => $transaksi->total, 'required' => 'required']) ?>
-                            </div>
-                            <button type="submit" class="btn btn-primary">Update</button>
-                        <?= form_close() ?>
+                            <input type="hidden" name="tgl_masuk" id="tgl_masuk" value="<?= esc($transaksi['tgl_masuk']) ?>">
+                            <input type="hidden" name="tgl_ambil" id="tgl_ambil" value="<?= esc($transaksi['tgl_ambil']) ?>">
+
+                            <?php if (!$transaksi['tgl_ambil']): ?>
+                                <div class="form-group">
+                                    <button type="submit" class="btn btn-primary">Update</button>
+                                </div>
+                            <?php else: ?>
+                                <div class="form-group">
+                                    <p class="text-danger">Tanggal ambil sudah dikonfirmasi dan tidak dapat diubah.</p>
+                                </div>
+                            <?php endif; ?>
+                        </form>
                     </div>
-                </div>                                                            
+                </div>
             </div>
         </div>
     </div>
 </div>
+
+<script>
+    // JavaScript untuk menghitung total otomatis
+    document.addEventListener('DOMContentLoaded', function() {
+        const paketSelect = document.getElementById('kode_paket');
+        const jumlahInput = document.getElementById('jumlah');
+        const totalInput = document.getElementById('total');
+
+        function updateTotal() {
+            const paketId = paketSelect.value;
+            const jumlah = parseInt(jumlahInput.value) || 0;
+
+            if (paketId) {
+                fetch(`<?= site_url('transaksi/getPaketPrice') ?>/${paketId}`)
+                    .then(response => response.json())
+                    .then(data => {
+                        if (data && data.harga) {
+                            const hargaSatuan = data.harga;
+                            totalInput.value = hargaSatuan * jumlah;
+                        } else {
+                            totalInput.value = 0;
+                        }
+                    });
+            } else {
+                totalInput.value = 0;
+            }
+        }
+
+        paketSelect.addEventListener('change', updateTotal);
+        jumlahInput.addEventListener('input', updateTotal);
+
+        // Initialize total
+        updateTotal();
+    });
+</script>
 
 <?= $this->endSection() ?>
