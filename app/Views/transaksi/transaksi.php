@@ -27,7 +27,7 @@
                                 <?php if (!empty($transaksi) && is_array($transaksi)): ?>
                                     <?php $no = 1; foreach ($transaksi as $item): ?>
                                     <tr>
-                                        <td><?= $no++ ?></td>
+                                        <td><?= esc($no++) ?></td>
                                         <td><?= esc($item['no_order']) ?></td>
                                         <td><?= esc($item['nama']) ?></td>
                                         <td><?= esc($item['tgl_masuk']) ?></td>
@@ -65,7 +65,7 @@
 function confirmPickup(noOrder) {
     if (confirm('Apakah Anda yakin ingin mengkonfirmasi tanggal ambil untuk order ini?')) {
         // Kirim permintaan konfirmasi ke server
-        window.location.href = '<?= site_url('transaksi/konfirmasi_ambil') ?>/' + noOrder;
+        window.location.href = '<?= site_url('transaksi/konfirmasi_ambil/') ?>' + noOrder;
     }
 }
 </script>

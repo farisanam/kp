@@ -34,7 +34,7 @@
                             </div>
                             <div class="form-group">
                                 <label for="jumlah">Jumlah</label>
-                                <input type="number" class="form-control" name="jumlah" id="jumlah" required>
+                                <input type="number" class="form-control" name="jumlah" id="jumlah" min="1" required>
                             </div>
                             <div class="form-group">
                                 <label for="total">Total</label>

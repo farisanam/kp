@@ -11,7 +11,7 @@ class Transaksi extends BaseController
     public function index()
     {
         $transaksiModel = new TransaksiModel();
-        $data['transaksi'] = $transaksiModel->getTransaksi();
+        $data['transaksi'] = $transaksiModel->getTransaksiOrdered(); // Mengambil data yang terurut
         return view('transaksi/transaksi', $data);
     }
 
@@ -30,7 +30,7 @@ class Transaksi extends BaseController
         $transaksiModel = new TransaksiModel();
 
         $id_pelanggan = $this->request->getPost('id_pelanggan');
-        $kode_paket = $this->request->getPost('paket'); // Perbaiki key untuk paket
+        $kode_paket = $this->request->getPost('paket');
         $jumlah = $this->request->getPost('jumlah');
 
         // Mendapatkan harga dari paket
@@ -42,7 +42,8 @@ class Transaksi extends BaseController
 
             $data = [
                 'id_pelanggan' => $id_pelanggan,
-                'tgl_masuk' => date('Y-m-d'), // Tanggal saat ini
+                'tgl_masuk' => date('Y-m-d'),
+                'paket' => $kode_paket,
                 'jumlah' => $jumlah,
                 'total' => $total,
             ];
@@ -57,29 +58,56 @@ class Transaksi extends BaseController
     }
 
     public function edit($no_order)
-    {
-        $transaksiModel = new TransaksiModel();
-        $pelangganModel = new PelangganModel();
-        $paketModel = new PaketModel();
-        $data['transaksi'] = $transaksiModel->find($no_order);
-        $data['pelanggan'] = $pelangganModel->findAll();
-        $data['paket'] = $paketModel->getPaket();
-        return view('transaksi/edit_transaksi', $data);
+{
+    $transaksiModel = new TransaksiModel();
+    $pelangganModel = new PelangganModel();
+    $paketModel = new PaketModel();
+
+    $transaksi = $transaksiModel->find($no_order);
+    $pelanggan = $pelangganModel->findAll();
+    $paket = $paketModel->getPaket(); // Mendapatkan data paket
+
+    if (!$transaksi) {
+        return redirect()->to('/transaksi')->with('error', 'Transaksi tidak ditemukan');
     }
+
+    $data = [
+        'transaksi' => $transaksi,
+        'pelanggan' => $pelanggan,
+        'paket' => $paket,
+    ];
+
+    return view('transaksi/edit_transaksi', $data);
+}
 
     public function update($no_order)
     {
         $transaksiModel = new TransaksiModel();
+        $paketModel = new PaketModel();
+
+        $id_pelanggan = $this->request->getPost('id_pelanggan');
+        $kode_paket = $this->request->getPost('paket');
+        $jumlah = $this->request->getPost('jumlah');
+
+        // Mendapatkan harga dari paket
+        $paket = $paketModel->where('kode_paket', $kode_paket)->first();
+        if (!$paket) {
+            return redirect()->back()->with('error', 'Paket tidak ditemukan');
+        }
+
+        $harga_satuan = $paket['harga'];
+        $total = $harga_satuan * $jumlah;
+
         $data = [
-            'id_pelanggan' => $this->request->getPost('id_pelanggan'),
-            'kode_paket' => $this->request->getPost('kode_paket'),
-            'tgl_masuk' => $this->request->getPost('tgl_masuk'),
-            'tgl_ambil' => $this->request->getPost('tgl_ambil'),
-            'jumlah' => $this->request->getPost('jumlah'),
-            'total' => $this->request->getPost('total'),
+            'id_pelanggan' => $id_pelanggan,
+            'paket' => $kode_paket,
+            'jumlah' => $jumlah,
+            'total' => $total,
         ];
+
         $transaksiModel->update($no_order, $data);
-        return redirect()->to('/transaksi');
+
+        return redirect()->to('/transaksi')->with('message', 'Transaksi berhasil diupdate');
     }
 
     public function delete($no_order)
@@ -94,22 +122,21 @@ class Transaksi extends BaseController
     }
     
     public function konfirmasi_ambil($no_order)
-{
-    $transaksiModel = new TransaksiModel();
+    {
+        $transaksiModel = new TransaksiModel();
 
-    // Update transaksi untuk menambahkan tgl_ambil
+    // Update transaksi untuk menambahkan tgl_ambil dan status
     $data = [
         'tgl_ambil' => date('Y-m-d'),
+        'status' => 'sudah diambil'  // Menetapkan status sebagai "sudah diambil"
     ];
 
     // Pastikan bahwa data ini valid dan eksis
     if ($transaksiModel->update($no_order, $data)) {
-        return redirect()->to('/transaksi');
+        return redirect()->to('/transaksi')->with('message', 'Tanggal ambil dikonfirmasi dan status diupdate');
     } else {
         // Jika gagal, Anda bisa menambahkan penanganan error disini
         return redirect()->back()->with('error', 'Gagal mengkonfirmasi tanggal ambil');
+        }
     }
-}
-
-
 }

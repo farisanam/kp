@@ -11,11 +11,6 @@ class PaketModel extends Model
 
     protected $allowedFields = ['kode_paket', 'paket', 'jenis', 'harga']; 
 
-    public function getPaket()
-    {
-        return $this->findAll();
-    }
-    
     protected $validationRules = [
         'kode_paket' => 'required|is_unique[paket.kode_paket]', 
         'paket'      => 'required',
@@ -28,4 +23,10 @@ class PaketModel extends Model
             'is_unique' => 'Kode paket ini sudah ada. Mohon gunakan kode lain.'
         ]
     ];
+
+    public function getPaket()
+{
+    return $this->findAll(); // Atau sesuaikan dengan query yang benar
+}
+
 }

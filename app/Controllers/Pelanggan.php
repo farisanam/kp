@@ -3,15 +3,19 @@
 namespace App\Controllers;
 
 use App\Models\PelangganModel;
-use CodeIgniter\Controller;
 
-class Pelanggan extends Controller
+class Pelanggan extends BaseController
 {
+    protected $pelangganModel;
+
+    public function __construct()
+    {
+        $this->pelangganModel = new PelangganModel();
+    }
+
     public function index()
     {
-        // Ambil data dari database
-        $model = new PelangganModel();
-        $data['pelanggan'] = $model->findAll();
+        $data['pelanggan'] = $this->pelangganModel->getPelanggan();
         return view('pelanggan/pelanggan', $data);
     }
 
@@ -23,45 +27,45 @@ class Pelanggan extends Controller
     public function simpan()
     {
         $model = new PelangganModel();
-        $data = [
+
+        if (!$this->validate($model->getValidationRules(), $model->getValidationMessages())) {
+            // Jika validasi gagal
+            return redirect()->back()->withInput()->with('errors', $this->validator->getErrors());
+        }
+
+        $model->save([
             'nama' => $this->request->getPost('nama'),
             'alamat' => $this->request->getPost('alamat'),
-            'telepon' => $this->request->getPost('telepon'),
-        ];
-        
-        $model->insert($data);
-        
-        return redirect()->to(base_url('pelanggan'));
+            'telepon' => $this->request->getPost('telepon')
+        ]);
+
+        return redirect()->to('/pelanggan');
     }
 
-    public function edit($id)
+    public function edit($id_pelanggan)
     {
-        $model = new PelangganModel();
-        $data['pelanggan'] = $model->find($id);
-
+        $data['pelanggan'] = $this->pelangganModel->find($id_pelanggan);
         return view('pelanggan/edit_pelanggan', $data);
     }
 
-    public function update($id)
+    public function update($id_pelanggan)
     {
-        $model = new PelangganModel();
         $data = [
-            'nama'    => $this->request->getPost('nama'),
-            'alamat'  => $this->request->getPost('alamat'),
-            'telepon' => $this->request->getPost('telepon'),
+            'nama' => $this->request->getPost('nama'),
+            'alamat' => $this->request->getPost('alamat'),
+            'telepon' => $this->request->getPost('telepon')
         ];
 
-        $model->update($id, $data);
+        if ($this->pelangganModel->update($id_pelanggan, $data) === false) {
+            return redirect()->back()->withInput()->with('errors', $this->pelangganModel->errors());
+        }
 
-        return redirect()->to('pelanggan');
+        return redirect()->to('/pelanggan');
     }
 
-    public function delete($id)
+    public function delete($id_pelanggan)
     {
-        $model = new PelangganModel();
-        $model->delete($id);
-
-        return redirect()->to('pelanggan');
+        $this->pelangganModel->delete($id_pelanggan);
+        return redirect()->to('/pelanggan');
     }
-
 }

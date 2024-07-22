@@ -3,14 +3,19 @@
 namespace App\Controllers;
 
 use App\Models\PaketModel;
-use CodeIgniter\Controller;
 
-class Paket extends Controller
+class Paket extends BaseController
 {
+    protected $paketModel;
+
+    public function __construct()
+    {
+        $this->paketModel = new PaketModel();
+    }
+
     public function index()
     {
-        $model = new PaketModel();
-        $data['paket'] = $model->findAll();
+        $data['paket'] = $this->paketModel->getPaket();
         return view('paket/paket', $data);
     }
 
@@ -21,54 +26,44 @@ class Paket extends Controller
 
     public function simpan()
     {
-        $model = new PaketModel();
         $data = [
             'kode_paket' => $this->request->getPost('kode_paket'),
-            'paket'      => $this->request->getPost('paket'),
-            'jenis'      => $this->request->getPost('jenis'),
-            'harga'      => $this->request->getPost('harga'),
+            'paket' => $this->request->getPost('paket'),
+            'jenis' => $this->request->getPost('jenis'),
+            'harga' => $this->request->getPost('harga')
         ];
 
-        if ($model->insert($data) === false) {
-            return redirect()->back()->withInput()->with('errors', $model->errors());
+        if ($this->paketModel->insert($data) === false) {
+            return redirect()->back()->withInput()->with('errors', $this->paketModel->errors());
         }
 
-        return redirect()->to(base_url('paket'));
+        return redirect()->to('/paket');
     }
 
-    public function edit($id)
+    public function edit($kode_paket)
     {
-        $model = new PaketModel();
-        $data['paket'] = $model->find($id);
+        $data['paket'] = $this->paketModel->find($kode_paket);
         return view('paket/edit_paket', $data);
     }
 
-    public function update($id)
+    public function update($kode_paket)
     {
-        $model = new PaketModel();
         $data = [
             'paket' => $this->request->getPost('paket'),
             'jenis' => $this->request->getPost('jenis'),
-            'harga' => $this->request->getPost('harga'),
+            'harga' => $this->request->getPost('harga')
         ];
 
-        if ($model->update($id, $data) === false) {
-            return redirect()->back()->withInput()->with('errors', $model->errors());
+        if ($this->paketModel->update($kode_paket, $data) === false) {
+            return redirect()->back()->withInput()->with('errors', $this->paketModel->errors());
         }
 
-        return redirect()->to(base_url('paket'));
+        return redirect()->to('/paket');
     }
 
-    public function delete($id)
+    public function delete($kode_paket)
     {
-        $model = new PaketModel();
-
-        if ($model->find($id)) {
-            $model->delete($id);
-        } else {
-            return redirect()->back()->with('error', 'Kode Paket tidak ditemukan.');
-        }
-
-        return redirect()->to(base_url('paket'));
+        $this->paketModel->delete($kode_paket);
+        return redirect()->to('/paket');
     }
 }

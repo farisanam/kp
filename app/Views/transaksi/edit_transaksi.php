@@ -10,48 +10,46 @@
                     <div class="panel-heading">Edit Transaksi</div>
                     <div class="panel-body">
                         <!-- Form Edit Transaksi -->
-                        <form action="<?= site_url('transaksi/update/' . $transaksi['no_order']) ?>" method="post">
+                        <form action="<?= site_url('transaksi/update/' . esc($transaksi['no_order'])) ?>" method="post">
                             <?= csrf_field() ?>
+                            <input type="hidden" name="_method" value="POST">
                             <div class="form-group">
-                                <label for="id_pelanggan">Nama Pelanggan</label>
-                                <select name="id_pelanggan" id="id_pelanggan" class="form-control" required>
-                                    <?php foreach ($pelanggan as $p): ?>
-                                        <option value="<?= $p['id_pelanggan'] ?>" <?= ($transaksi['id_pelanggan'] == $p['id_pelanggan']) ? 'selected' : '' ?>>
-                                            <?= esc($p['nama']) ?>
+                                <label for="id_pelanggan">Pelanggan</label>
+                                <select class="form-control" name="id_pelanggan" id="id_pelanggan" required>
+                                    <?php foreach ($pelanggan as $pelangganItem): ?>
+                                        <option value="<?= esc($pelangganItem['id_pelanggan']) ?>"
+                                            <?= isset($transaksi['id_pelanggan']) && $transaksi['id_pelanggan'] == $pelangganItem['id_pelanggan'] ? 'selected' : '' ?>>
+                                            <?= esc($pelangganItem['nama']) ?>
                                         </option>
                                     <?php endforeach; ?>
                                 </select>
                             </div>
                             <div class="form-group">
-                                <label for="kode_paket">Paket</label>
-                                <select name="kode_paket" id="kode_paket" class="form-control" required>
-                                    <?php foreach ($paket as $p): ?>
-                                        <option value="<?= $p['kode_paket'] ?>" <?= ($transaksi['kode_paket'] == $p['kode_paket']) ? 'selected' : '' ?>>
-                                            <?= esc($p['paket']) ?>
-                                        </option>
-                                    <?php endforeach; ?>
+                                <label for="paket">Paket</label>
+                                <select class="form-control" name="paket" id="paket" required>
+                                    <?php if (isset($paket) && is_array($paket)): ?>
+                                        <?php foreach ($paket as $paketItem): ?>
+                                            <option value="<?= esc($paketItem['kode_paket']) ?>"
+                                                data-harga="<?= esc($paketItem['harga']) ?>"
+                                                <?= isset($transaksi['paket']) && $transaksi['paket'] == $paketItem['kode_paket'] ? 'selected' : '' ?>>
+                                                <?= esc($paketItem['paket']) ?>
+                                            </option>
+                                        <?php endforeach; ?>
+                                    <?php else: ?>
+                                        <option value="">No packages available</option>
+                                    <?php endif; ?>
                                 </select>
                             </div>
                             <div class="form-group">
                                 <label for="jumlah">Jumlah</label>
-                                <input type="number" name="jumlah" id="jumlah" class="form-control" value="<?= esc($transaksi['jumlah']) ?>" min="1" required>
+                                <input type="number" class="form-control" name="jumlah" id="jumlah" min="1" value="<?= esc($transaksi['jumlah']) ?>" required>
                             </div>
                             <div class="form-group">
                                 <label for="total">Total</label>
-                                <input type="text" name="total" id="total" class="form-control" value="<?= esc($transaksi['total']) ?>" readonly>
+                                <input type="text" class="form-control" name="total" id="total" value="<?= esc($transaksi['total']) ?>" readonly>
                             </div>
-                            <input type="hidden" name="tgl_masuk" id="tgl_masuk" value="<?= esc($transaksi['tgl_masuk']) ?>">
-                            <input type="hidden" name="tgl_ambil" id="tgl_ambil" value="<?= esc($transaksi['tgl_ambil']) ?>">
-
-                            <?php if (!$transaksi['tgl_ambil']): ?>
-                                <div class="form-group">
-                                    <button type="submit" class="btn btn-primary">Update</button>
-                                </div>
-                            <?php else: ?>
-                                <div class="form-group">
-                                    <p class="text-danger">Tanggal ambil sudah dikonfirmasi dan tidak dapat diubah.</p>
-                                </div>
-                            <?php endif; ?>
+                            <button type="submit" class="btn btn-primary">Simpan</button>
+                            <a href="<?= site_url('transaksi') ?>" class="btn btn-default">Batal</a>
                         </form>
                     </div>
                 </div>
@@ -61,38 +59,25 @@
 </div>
 
 <script>
-    // JavaScript untuk menghitung total otomatis
-    document.addEventListener('DOMContentLoaded', function() {
-        const paketSelect = document.getElementById('kode_paket');
-        const jumlahInput = document.getElementById('jumlah');
-        const totalInput = document.getElementById('total');
+document.addEventListener('DOMContentLoaded', function () {
+    const paketSelect = document.getElementById('paket');
+    const jumlahInput = document.getElementById('jumlah');
+    const totalInput = document.getElementById('total');
 
-        function updateTotal() {
-            const paketId = paketSelect.value;
-            const jumlah = parseInt(jumlahInput.value) || 0;
+    function updateTotal() {
+        const selectedOption = paketSelect.options[paketSelect.selectedIndex];
+        const harga = selectedOption ? parseFloat(selectedOption.getAttribute('data-harga')) : 0;
+        const jumlah = parseFloat(jumlahInput.value) || 0;
+        const total = harga * jumlah;
+        totalInput.value = total.toFixed(0); // Format total sebagai integer
+    }
 
-            if (paketId) {
-                fetch(`<?= site_url('transaksi/getPaketPrice') ?>/${paketId}`)
-                    .then(response => response.json())
-                    .then(data => {
-                        if (data && data.harga) {
-                            const hargaSatuan = data.harga;
-                            totalInput.value = hargaSatuan * jumlah;
-                        } else {
-                            totalInput.value = 0;
-                        }
-                    });
-            } else {
-                totalInput.value = 0;
-            }
-        }
+    paketSelect.addEventListener('change', updateTotal);
+    jumlahInput.addEventListener('input', updateTotal);
 
-        paketSelect.addEventListener('change', updateTotal);
-        jumlahInput.addEventListener('input', updateTotal);
-
-        // Initialize total
-        updateTotal();
-    });
+    // Update total on page load if already set
+    updateTotal();
+});
 </script>
 
 <?= $this->endSection() ?>
