@@ -9,7 +9,7 @@
                 <div class="panel panel-default">
                     <div class="panel-heading">Data Pelanggan</div>
                     <div class="panel-body">                                    
-                        <table class="table table-striped table-responsive">
+                        <table id="pelangganTable" class="table table-striped table-responsive table-bordered">
                             <thead>
                                 <tr>
                                     <th>No</th>                                    
@@ -37,12 +37,12 @@
                                     <?php endforeach; ?>
                                 <?php else: ?>
                                     <tr>
-                                        <td colspan="6">Belum ada data.</td>
+                                        <td colspan="6" class="text-center">Belum ada data.</td>
                                     </tr>
                                 <?php endif; ?>
                             </tbody>
                         </table>
-                        <div class="text-center">
+                        <div class="text-center mt-3">
                             <?= anchor('pelanggan/tambah_pelanggan', '<button type="button" class="btn btn-primary">Tambah Data</button>') ?>
                         </div>
                     </div>

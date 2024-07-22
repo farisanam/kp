@@ -6,15 +6,16 @@ class TransaksiModel extends Model
 {
     protected $table = 'transaksi';
     protected $primaryKey = 'no_order';
-    protected $allowedFields = ['tgl_masuk', 'jenis', 'paket', 'jumlah', 'status', 'tgl_ambil', 'harga_satuan', 'total'];
+    protected $allowedFields = ['no_order', 'id_pelanggan', 'tgl_masuk', 'tgl_ambil', 'jenis', 'paket', 'jumlah', 'status', 'harga_satuan', 'total'];
     protected $useTimestamps = true;
 
-    public function getTransaksi()
+    public function getTransaksi($tglAwal = null, $tglAkhir = null)
     {
-        return $this->select('transaksi.*, pelanggan.nama')
-                    ->join('pelanggan', 'transaksi.no_order = pelanggan.id_pelanggan', 'left')
-                    ->findAll();
+        if ($tglAwal && $tglAkhir) {
+            return $this->where('tgl_masuk >=', $tglAwal)
+                        ->where('tgl_masuk <=', $tglAkhir)
+                        ->findAll();
+        }
+        return $this->findAll();
     }
-
-    // Method lainnya sesuai kebutuhan
 }

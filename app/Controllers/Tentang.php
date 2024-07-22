@@ -6,6 +6,6 @@ class Tentang extends BaseController
 {
     public function index(): string
     {
-        return view ('tentang');
+        return view ('tentang/tentang');
     }
 }
