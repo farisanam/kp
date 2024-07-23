@@ -37,8 +37,9 @@ $routes->group('transaksi', function($routes) {
 });
 
 
-$routes->get('/laporan', 'Laporan::index');
-
+$routes->get('laporan', 'Laporan::index');
+$routes->post('laporan', 'Laporan::index');
+$routes->get('laporan/cetak', 'Laporan::cetak');
 
 $routes->get('/tentang', 'Tentang::index');
 

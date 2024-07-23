@@ -10,12 +10,21 @@ class TransaksiModel extends Model
     protected $primaryKey = 'no_order';
     protected $allowedFields = ['id_pelanggan', 'tgl_masuk', 'tgl_ambil', 'jumlah', 'total', 'status'];
 
-    // Fungsi untuk mencari transaksi berdasarkan rentang tanggal
-    public function findByDateRange($startDate, $endDate)
+    public function getTransaksiByDate($tglAwal, $tglAkhir)
     {
-        return $this->where('tgl_masuk >=', $startDate)
-                    ->where('tgl_masuk <=', $endDate)
-                    ->findAll();
+        $builder = $this->db->table($this->table);
+        $builder->select('transaksi.*, pelanggan.nama');
+        $builder->join('pelanggan', 'transaksi.id_pelanggan = pelanggan.id_pelanggan');
+
+        if ($tglAwal && $tglAkhir) {
+            $builder->where('tgl_masuk >=', $tglAwal);
+            $builder->where('tgl_masuk <=', $tglAkhir);
+        }
+        $builder->orderBy('transaksi.no_order', 'ASC');
+
+
+        $query = $builder->get();
+        return $query->getResultArray();
     }
 
     // Fungsi untuk mendapatkan semua transaksi dengan nama pelanggan

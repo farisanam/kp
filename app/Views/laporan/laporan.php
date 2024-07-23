@@ -28,7 +28,7 @@
                                 <tr>
                                     <th>No.</th>
                                     <th>No. Order</th>
-                                    <th>Nama Pelanggan</th>
+                                    <th>Nama</th>
                                     <th>Status</th>
                                     <th>Total</th>
                                 </tr>
@@ -41,7 +41,7 @@
                                         <td><?= esc($item['no_order']) ?></td>
                                         <td><?= esc($item['nama']) ?></td>
                                         <td><?= esc($item['status']) ?></td>
-                                        <td><?= esc($item['total']) ?></td>
+                                        <td><?= number_format($item['total'], 0, ',', '.') ?></td>
                                     </tr>
                                     <?php endforeach; ?>
                                 <?php else: ?>
@@ -51,9 +51,11 @@
                                 <?php endif; ?>
                             </tbody>
                         </table>
+                        <?php if (!empty($transaksi) && is_array($transaksi)): ?>
                         <div class="text-center mt-3">
-                            <a href="<?= site_url('rekap/cetak?awal=' . urlencode($txtTglAwal) . '&akhir=' . urlencode($txtTglAkhir)) ?>" target="_blank" class="btn btn-primary">Cetak Laporan</a>
+                            <a href="<?= site_url('laporan/cetak?awal=' . urlencode($txtTglAwal) . '&akhir=' . urlencode($txtTglAkhir)) ?>" target="_blank" class="btn btn-primary">Cetak Laporan</a>
                         </div>
+                        <?php endif; ?>
                     </div>
                 </div>
             </div>

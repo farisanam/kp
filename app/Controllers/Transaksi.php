@@ -128,7 +128,7 @@ class Transaksi extends BaseController
     // Update transaksi untuk menambahkan tgl_ambil dan status
     $data = [
         'tgl_ambil' => date('Y-m-d'),
-        'status' => 'sudah diambil'  // Menetapkan status sebagai "sudah diambil"
+        'status' => 'Sudah Diambil'  // Menetapkan status sebagai "sudah diambil"
     ];
 
     // Pastikan bahwa data ini valid dan eksis
@@ -138,5 +138,18 @@ class Transaksi extends BaseController
         // Jika gagal, Anda bisa menambahkan penanganan error disini
         return redirect()->back()->with('error', 'Gagal mengkonfirmasi tanggal ambil');
         }
+    }
+
+    protected $table = 'transaksi';
+
+    public function getTransaksiByDate($tglAwal, $tglAkhir)
+    {
+        if ($tglAwal && $tglAkhir) {
+            return $this->where('tgl_masuk >=', $tglAwal)
+                        ->where('tgl_masuk <=', $tglAkhir)
+                        ->findAll();
+        }
+        return $this->findAll();
+        
     }
 }

@@ -33,7 +33,7 @@
                                         <td><?= esc($item['tgl_masuk']) ?></td>
                                         <td><?= esc($item['tgl_ambil']) ?></td>
                                         <td><?= esc($item['jumlah']) ?></td>
-                                        <td><?= esc($item['total']) ?></td>
+                                        <td><?= number_format($item['total'], 0, ',', '.') ?></td>
                                         <td>
                                             <a href="<?= site_url('transaksi/edit/' . $item['no_order']) ?>" class="btn btn-warning btn-sm">Edit</a>
                                             <a href="<?= site_url('transaksi/delete/' . $item['no_order']) ?>" class="btn btn-danger btn-sm" onclick="return confirm('Yakin ingin menghapus?')">Hapus</a>
@@ -63,8 +63,7 @@
 
 <script>
 function confirmPickup(noOrder) {
-    if (confirm('Apakah Anda yakin ingin mengkonfirmasi tanggal ambil untuk order ini?')) {
-        // Kirim permintaan konfirmasi ke server
+    if (confirm('Apakah Anda yakin ingin mengkonfirmasi order ini?')) {
         window.location.href = '<?= site_url('transaksi/konfirmasi_ambil/') ?>' + noOrder;
     }
 }
