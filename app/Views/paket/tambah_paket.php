@@ -47,7 +47,7 @@
                             </div>
                             <div class="text-center">
                                 <button class="btn btn-primary" name="tambah" value="Tambah" type="submit">Tambah</button>
-                                <a href="<?= base_url('paket') ?>" class="btn btn-default">Batal</a>
+                                <?= anchor('paket', 'Batal', ['class' => 'btn btn-default']) ?>
                             </div>
                         </form>                                    
                     </div>

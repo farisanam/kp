@@ -40,7 +40,9 @@
                                 <label for="total">Total</label>
                                 <input type="text" class="form-control" name="total" id="total" readonly>
                             </div>
-                            <button type="submit" class="btn btn-primary">Simpan</button>
+                            <div class="text-center">
+                            <button type="submit" class="btn btn-primary">Tambah</button>
+                            <?= anchor('transaksi', 'Batal', ['class' => 'btn btn-default']) ?>
                         </form>
                     </div>
                 </div>

@@ -1,3 +1,4 @@
+<!-- app/Views/layouts/partials/navbar.php -->
 <nav class="navbar navbar-inverse">
     <div class="container-fluid">
         <div class="navbar-header">
@@ -10,7 +11,7 @@
                     <span class="caret"></span>
                 </a>
                 <ul class="dropdown-menu">
-                    <li><a href="../login/logout.php">Log Out <span class="glyphicon glyphicon-off"></span></a></li>
+                    <li><a href="<?= base_url('auth/logout') ?>">Log Out <span class="glyphicon glyphicon-off"></span></a></li>
                 </ul>
             </li>
         </ul>
