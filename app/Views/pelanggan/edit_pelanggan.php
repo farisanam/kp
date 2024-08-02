@@ -1,4 +1,4 @@
-<?= $this->extend('layout') ?>
+<?= $this->extend('layouts/layout') ?>
 <?= $this->section('content') ?>
 
 <!-- Page Content -->
@@ -27,7 +27,7 @@
                             <?= form_input('telepon', set_value('telepon', $pelanggan['telepon']), ['class' => 'form-control', 'id' => 'telepon', 'pattern' => '[0-9]{10,14}', 'title' => 'Masukkan angka antara 10-14 digit tanpa spasi', 'maxlength' => '14']) ?>
                         </div>
                         <div class="text-center">
-                            <?= form_submit('submit', 'Update', ['class' => 'btn btn-primary']) ?>
+                            <?= form_submit('submit', 'Simpan', ['class' => 'btn btn-primary']) ?>
                             <?= anchor('pelanggan', 'Batal', ['class' => 'btn btn-default']) ?>
                         </div>
                         <?= form_close() ?>

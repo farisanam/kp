@@ -1,4 +1,4 @@
-<?= $this->extend('layout') ?>
+<?= $this->extend('layouts/layout') ?>
 <?= $this->section('content') ?>
 
 <!-- Page Content -->
@@ -26,8 +26,11 @@
                             <?= form_label('Harga', 'harga') ?>
                             <?= form_input(['type' => 'number', 'name' => 'harga', 'value' => set_value('harga', $paket['harga']), 'class' => 'form-control', 'id' => 'harga', 'min' => '0', 'step' => '1']) ?>
                         </div>
-                        <?= form_submit('submit', 'Update', ['class' => 'btn btn-primary']) ?>
-                        <?= anchor('paket', 'Cancel', ['class' => 'btn btn-default']) ?>
+                        <div class="text-center">
+                            <?= form_submit('submit', 'Simpan', ['class' => 'btn btn-primary']) ?>
+                            <?= anchor('paket', 'Batal', ['class' => 'btn btn-default']) ?>
+                        </div>
+
                         <?= form_close() ?>
                     </div>
                 </div>                                                            

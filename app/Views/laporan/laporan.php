@@ -1,4 +1,4 @@
-<?= $this->extend('layout') ?>
+<?= $this->extend('layouts/layout') ?>
 <?= $this->section('content') ?>
 
 <div id="page-content-wrapper">
@@ -53,7 +53,7 @@
                         </table>
                         <?php if (!empty($transaksi) && is_array($transaksi)): ?>
                         <div class="text-center mt-3">
-                            <a href="<?= site_url('laporan/cetak?awal=' . urlencode($txtTglAwal) . '&akhir=' . urlencode($txtTglAkhir)) ?>" target="_blank" class="btn btn-primary">Cetak Laporan</a>
+                            <a href="<?= site_url('laporan/KICKBATH?awal=' . urlencode($txtTglAwal) . '&akhir=' . urlencode($txtTglAkhir)) ?>" target="_blank" class="btn btn-primary">Cetak Laporan</a>
                         </div>
                         <?php endif; ?>
                     </div>

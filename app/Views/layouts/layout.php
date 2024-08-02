@@ -13,9 +13,9 @@
     <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery.mask/1.14.15/jquery.mask.min.js"></script> 
 </head>
 <body>
-    <?php echo view('partials/navbar'); ?>
+    <?php echo view('layouts/partials/navbar'); ?>
     <div id="wrapper">            
-        <?php echo view('partials/sidebar'); ?>
+        <?php echo view('layouts/partials/sidebar'); ?>
 
         <!-- Main Content -->
         <div class="container">
@@ -33,6 +33,6 @@
     <script src="/js/jquery-1.12.3.min.js"></script>
     <script src="/js/bootstrap.min.js"></script>
     <script src="https://cdn.datatables.net/1.10.24/js/jquery.dataTables.min.js"></script> <!-- DataTables JS -->
-    <?php echo view('partials/footer'); ?>
+    <?php echo view('layouts/partials/footer'); ?>
 </body>
 </html>

@@ -23,7 +23,7 @@ class Laporan extends Controller
         return view('laporan/laporan', $data);
     }
 
-    public function cetak()
+    public function KICKBATH()
     {
         $txtTglAwal = $this->request->getGet('awal');
         $txtTglAkhir = $this->request->getGet('akhir');

@@ -1,4 +1,4 @@
-<?= $this->extend('layout') ?>
+<?= $this->extend('layouts/layout') ?>
 <?= $this->section('content') ?>
 
 <!-- Page Content -->
@@ -26,7 +26,8 @@
                             </div>
                             <div class="form-group">
                                 <label for="paket">Paket</label>
-                                <select class="form-control" name="paket" id="paket" required>
+                                    <select class="form-control" name="paket" id="paket" required>
+                                <option value="">Pilih Paket</option>
                                     <?php if (isset($paket) && is_array($paket)): ?>
                                         <?php foreach ($paket as $paketItem): ?>
                                             <option value="<?= esc($paketItem['kode_paket']) ?>"
@@ -48,8 +49,10 @@
                                 <label for="total">Total</label>
                                 <input type="text" class="form-control" name="total" id="total" value="<?= esc($transaksi['total']) ?>" readonly>
                             </div>
-                            <button type="submit" class="btn btn-primary">Simpan</button>
-                            <a href="<?= site_url('transaksi') ?>" class="btn btn-default">Batal</a>
+                            <div class="text-center">
+                                <button type="submit" class="btn btn-primary">Simpan</button>
+                                <a href="<?= site_url('transaksi') ?>" class="btn btn-default">Batal</a>
+                            </div>
                         </form>
                     </div>
                 </div>

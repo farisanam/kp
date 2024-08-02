@@ -1,4 +1,4 @@
-<?= $this->extend('layout') ?>
+<?= $this->extend('layouts/layout') ?>
 <?= $this->section('content') ?>
 
 <!-- Page Content -->
